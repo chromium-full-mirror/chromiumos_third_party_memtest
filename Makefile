@@ -50,10 +50,12 @@ reloc.o: reloc.c
 	$(CC) -c $(CFLAGS) -fno-strict-aliasing reloc.c
 
 test.o: test.c
-	$(CC) -c -Wall -march=i486 -m32 -O0 -fomit-frame-pointer -fno-builtin -ffreestanding test.c
+	$(CC) -c -Wall -march=i486 -m32 -O0 -fomit-frame-pointer \
+	    -fno-builtin -ffreestanding -fno-stack-protector test.c
 
 random.o: random.c
-	$(CC) -c -Wall -march=i486 -m32 -O3 -fomit-frame-pointer -fno-builtin -ffreestanding random.c
+	$(CC) -c -Wall -march=i486 -m32 -O3 -fomit-frame-pointer \
+	    -fno-builtin -ffreestanding -fno-stack-protector random.c
 
 clean:
 	rm -f *.o *.s *.iso memtest.bin memtest memtest_shared \
