@@ -56,6 +56,7 @@ struct lb_record {
 #define LB_TAG_UNUSED	0x0000
 
 #define LB_TAG_MEMORY	0x0001
+#define LB_TAG_FORWARD	0x0011
 
 struct lb_memory_range {
 	uint64_t start;

@@ -104,14 +104,29 @@ static struct lb_header * __find_lb_table(unsigned long start, unsigned long end
 static struct lb_header * find_lb_table(void)
 {
 	struct lb_header *head;
-	head = 0;
-	if (!head) {
-		/* First try at address 0 */
-		head = __find_lb_table(0x00000, 0x1000);
-	}
+
+	/* First try at address 0 */
+	head = __find_lb_table(0x00000, 0x1000);
+
 	if (!head) {
 		/* Then try at address 0xf0000 */
 		head = __find_lb_table(0xf0000, 0x100000);
+	}
+
+	if (head) {
+		struct lb_record *rec;
+
+		/* Check whether there is a forward header */
+		for_each_lbrec(head, rec) {
+			if (rec->tag == LB_TAG_FORWARD) {
+				struct lb_hwrpb *forward =
+					(struct lb_hwrpb *)rec;
+				head = __find_lb_table
+					((unsigned)forward->hwrpb,
+					 (unsigned)forward->hwrpb + 0x100);
+				break;
+			}
+		}
 	}
 	return head;
 }
