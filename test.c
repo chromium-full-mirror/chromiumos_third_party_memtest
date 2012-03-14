@@ -738,29 +738,25 @@ void movinv32(int iter, ulong p1, ulong lb, ulong hb, int sval, int off,int me)
  *			}
  */
 			asm __volatile__ (
-                                "pushl %%ebp\n\t"
-                                "movl %[pat], %%ebp\n\t"
                                 "jmp L20\n\t"
                                 ".p2align 4,,7\n\t"
                                 "L923:\n\t"
                                 "addl $4,%%edi\n\t"
                                 "L20:\n\t"
-                                "movl %%ebp,(%%edi)\n\t"
+                                "movl %[pat],(%%edi)\n\t"
                                 "addl $1,%%ecx\n\t"
                                 "cmpl $32,%%ecx\n\t"
                                 "jne L21\n\t"
-                                "movl %%esi,%%ebp\n\t"
+                                "movl %%esi,%[pat]\n\t"
                                 "xorl %%ecx,%%ecx\n\t"
                                 "jmp L22\n"
                                 "L21:\n\t"
-                                "shll $1,%%ebp\n\t"
-                                "orl %%eax,%%ebp\n\t"
+                                "shll $1,%[pat]\n\t"
+                                "orl %%eax,%[pat]\n\t"
                                 "L22:\n\t"
                                 "cmpl %%edx,%%edi\n\t"
                                 "jb L923\n\t"
-                                "movl %%ebp, %[pat]\n\t"
-                                "popl %%ebp\n\t"
-                                : "=c" (k), [pat] "=m" (pat)
+                                : "=c" (k), [pat] "=r" (pat)
                                 : "D" (p),"d" (pe),"c" (k), "[pat]" (pat),
                                         "a" (sval), "S" (lb)
 			);
@@ -831,29 +827,27 @@ void movinv32(int iter, ulong p1, ulong lb, ulong hb, int sval, int off,int me)
  *				}
  */
 				asm __volatile__ (
-                                        "pushl %%ebp\n\t"
-                                        "movl %[pat], %%ebp\n\t"
                                         "jmp L30\n\t"
                                         ".p2align 4,,7\n\t"
                                         "L930:\n\t"
                                         "addl $4,%%edi\n\t"
                                         "L30:\n\t"
-                                        "cmpl %%ebp,(%%edi)\n\t"
+                                        "cmpl %[pat],(%%edi)\n\t"
                                         "jne L34\n\t"
 
                                         "L35:\n\t"
-                                        "notl %%ebp\n\t"
-                                        "movl %%ebp,(%%edi)\n\t"
-                                        "notl %%ebp\n\t"
+                                        "notl %[pat]\n\t"
+                                        "movl %[pat],(%%edi)\n\t"
+                                        "notl %[pat]\n\t"
                                         "incl %%ecx\n\t"
                                         "cmpl $32,%%ecx\n\t"
                                         "jne L31\n\t"
-                                        "movl %%esi,%%ebp\n\t"
+                                        "movl %%esi,%[pat]\n\t"
                                         "xorl %%ecx,%%ecx\n\t"
                                         "jmp L32\n"
                                         "L31:\n\t"
-                                        "shll $1,%%ebp\n\t"
-                                        "orl %%eax,%%ebp\n\t"
+                                        "shll $1,%[pat]\n\t"
+                                        "orl %%eax,%[pat]\n\t"
 					"L32:\n\t"
                                         "cmpl %%edx,%%edi\n\t"
                                         "jb L930\n\t"
@@ -878,9 +872,7 @@ void movinv32(int iter, ulong p1, ulong lb, ulong hb, int sval, int off,int me)
                                         "jmp L35\n"
 
                                         "L33:\n\t"
-                                        "movl %%ebp, %[pat]\n\t"
-                                        "popl %%ebp\n\t"
-                                        : "=c" (k), [pat] "=m" (pat)
+                                        : "=c" (k), [pat] "=r" (pat)
                                         : "D" (p), "d" (pe), "c" (k),
                                           "[pat]" (pat), "a" (sval), "S" (lb)
 				);
@@ -957,29 +949,27 @@ void movinv32(int iter, ulong p1, ulong lb, ulong hb, int sval, int off,int me)
  *				};
  */
 				asm __volatile__ (
-                                        "pushl %%ebp\n\t"
-                                        "movl %[pat], %%ebp\n\t"
                                         "jmp L40\n\t"
                                         ".p2align 4,,7\n\t"
                                         "L49:\n\t"
                                         "subl $4,%%edi\n\t"
                                         "L40:\n\t"
-                                        "notl %%ebp\n\t"
-                                        "cmpl %%ebp,(%%edi)\n\t"
+                                        "notl %[pat]\n\t"
+                                        "cmpl %[pat],(%%edi)\n\t"
                                         "jne L44\n\t"
 
                                         "L45:\n\t"
-                                        "notl %%ebp\n\t"
-                                        "movl %%ebp,(%%edi)\n\t"
+                                        "notl %[pat]\n\t"
+                                        "movl %[pat],(%%edi)\n\t"
                                         "decl %%ecx\n\t"
                                         "cmpl $0,%%ecx\n\t"
                                         "jg L41\n\t"
-                                        "movl %%esi,%%ebp\n\t"
+                                        "movl %%esi,%[pat]\n\t"
                                         "movl $32,%%ecx\n\t"
                                         "jmp L42\n"
                                         "L41:\n\t"
-                                        "shrl $1,%%ebp\n\t"
-                                        "orl %%eax,%%ebp\n\t"
+                                        "shrl $1,%[pat]\n\t"
+                                        "orl %%eax,%[pat]\n\t"
 					"L42:\n\t"
                                         "cmpl %%edx,%%edi\n\t"
                                         "ja L49\n\t"
@@ -1004,9 +994,7 @@ void movinv32(int iter, ulong p1, ulong lb, ulong hb, int sval, int off,int me)
                                         "jmp L45\n"
 
                                         "L43:\n\t"
-                                        "movl %%ebp, %[pat]\n\t"
-                                        "popl %%ebp\n\t"
-                                        : "=c" (k), [pat] "=m" (pat)
+                                        : "=c" (k), [pat] "=r" (pat)
                                         : "D" (p), "d" (pe), "c" (k),
                                           "[pat]" (pat), "a" (p3), "S" (hb)
 				);
