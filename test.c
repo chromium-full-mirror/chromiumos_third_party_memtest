@@ -176,6 +176,7 @@ void addr_tst2(int me)
 				"cmpl %%edx,%%edi\n\t"
 				"jb L90\n\t"
 				: : "D" (p), "d" (pe)
+				: "cc", "memory"
 			);
 			p = pe + 1;
 		} while (!done);
@@ -238,7 +239,7 @@ void addr_tst2(int me)
 
 				"L98:\n\t"
 				: : "D" (p), "d" (pe)
-				: "ecx"
+				: "ecx", "cc", "memory"
 			);
 			p = pe + 1;
 		} while (!done);
@@ -320,14 +321,16 @@ void movinvr(int me)
                                 "L201:\n\t"
                                 "addl $4,%%edi\n\t"
                                 "L200:\n\t"
+				"pushl %%edx\n\t"
 				"pushl %%ecx\n\t" \
                                 "call rand\n\t"
 				"popl %%ecx\n\t" \
+				"popl %%edx\n\t"
 				"movl %%eax,(%%edi)\n\t"
                                 "cmpl %%esi,%%edi\n\t"
                                 "jb L201\n\t"
                                 : : "D" (p), "S" (pe), "c" (me)
-				: "eax"
+				: "eax", "cc", "memory"
                         );
 			p = pe + 1;
 		} while (!done);
@@ -400,9 +403,11 @@ void movinvr(int me)
 					"L27:\n\t" \
 					"addl $4,%%edi\n\t" \
 					"L26:\n\t" \
+					"pushl %%ecx\n\t" \
 					"pushl %%edx\n\t" \
 					"call rand\n\t"
 					"popl %%edx\n\t" \
+					"popl %%ecx\n\t" \
 					"xorl %%ecx,%%eax\n\t" \
 					"cmpl %%eax,(%%edi)\n\t" \
 					"jne L23\n\t" \
@@ -415,7 +420,7 @@ void movinvr(int me)
 					"jmp L24\n" \
 
 					"L23:\n\t" \
-					"pushl %%esi\n\t" \
+					"pushl %%edx\n\t" \
 					"pushl %%ecx\n\t" \
 					"pushl %%eax\n\t" \
 					"pushl %%edi\n\t" \
@@ -423,14 +428,14 @@ void movinvr(int me)
 					"popl %%edi\n\t" \
 					"popl %%eax\n\t" \
 					"popl %%ecx\n\t" \
-					"popl %%esi\n\t" \
+					"popl %%edx\n\t" \
 					"jmp L25\n" \
 
 					"L24:\n\t" \
                                         "popl %%ebp\n\t"
 					:: "D" (p), "S" (pe), "c" (num),
 						 "d" (me)
-					: "eax"
+					: "eax", "cc", "memory"
 				);
 				p = pe + 1;
 			} while (!done);
@@ -499,6 +504,7 @@ void movinv1(int iter, ulong p1, ulong p2, int me)
 				"rep\n\t" \
 				"stosl\n\t"
 				: : "c" (len), "D" (p), "a" (p1)
+				: "memory"
 			);
 			p = pe + 1;
 		} while (!done);
@@ -583,6 +589,7 @@ void movinv1(int iter, ulong p1, ulong p2, int me)
 
 					"L4:\n\t" \
 					:: "a" (p1), "D" (p), "d" (pe), "c" (p2)
+					: "cc", "memory"
 				);
 				p = pe + 1;
 			} while (!done);
@@ -666,6 +673,7 @@ void movinv1(int iter, ulong p1, ulong p2, int me)
 
 					"L7:\n\t"
 					:: "a" (p1), "D" (p), "d" (pe), "c" (p2)
+					: "cc", "memory"
 				);
 				p = pe - 1;
 			} while (!done);
@@ -759,6 +767,7 @@ void movinv32(int iter, ulong p1, ulong lb, ulong hb, int sval, int off,int me)
                                 : "=c" (k), [pat] "=r" (pat)
                                 : "D" (p),"d" (pe),"c" (k), "[pat]" (pat),
                                         "a" (sval), "S" (lb)
+				: "cc", "memory"
 			);
 			p = pe + 1;
 		} while (!done);
@@ -875,6 +884,7 @@ void movinv32(int iter, ulong p1, ulong lb, ulong hb, int sval, int off,int me)
                                         : "=c" (k), [pat] "=r" (pat)
                                         : "D" (p), "d" (pe), "c" (k),
                                           "[pat]" (pat), "a" (sval), "S" (lb)
+					: "cc", "memory"
 				);
 				p = pe + 1;
 			} while (!done);
@@ -997,6 +1007,7 @@ void movinv32(int iter, ulong p1, ulong lb, ulong hb, int sval, int off,int me)
                                         : "=c" (k), [pat] "=r" (pat)
                                         : "D" (p), "d" (pe), "c" (k),
                                           "[pat]" (pat), "a" (p3), "S" (hb)
+					: "cc", "memory"
 				);
 				p = pe - 1;
 			} while (!done);
@@ -1076,6 +1087,7 @@ void modtst(int offset, int iter, ulong p1, ulong p2, int me)
 				"jb L60\n\t" \
 				: "=D" (p)
 				: "D" (p), "d" (pe), "a" (p1)
+				: "cc", "memory"
 			);
 		} while (!done);
 	}
@@ -1151,6 +1163,7 @@ void modtst(int offset, int iter, ulong p1, ulong p2, int me)
 					: "=S" (k)
 					: "D" (p), "d" (pe), "a" (p2),
 						"S" (k), "c" (offset)
+					: "cc", "memory"
 				);
 				p = pe + 1;
 			} while (!done);
@@ -1232,7 +1245,7 @@ void modtst(int offset, int iter, ulong p1, ulong p2, int me)
 				"L73:\n\t" \
 				: "=D" (p)
 				: "D" (p), "d" (pe), "a" (p1)
-				: "ecx"
+				: "ecx", "cc", "memory"
 			);
 		} while (!done);
 	}
@@ -1329,7 +1342,7 @@ void block_move(int iter, int me)
 				"jnz  L100\n\t"
 				: "=D" (p)
 				: "D" (p), "c" (len), "a" (1)
-				: "edx"
+				: "edx", "cc", "memory"
 			);
 		} while (!done);
 	}
@@ -1411,7 +1424,7 @@ void block_move(int iter, int me)
 					"rep\n\t"
 					"movsl\n\t"
 					:: "g" (p), "g" (pp), "g" (len)
-					: "edi", "esi", "ecx"
+					: "edi", "esi", "ecx", "cc", "memory"
 				);
 			}
 			p = pe;
@@ -1493,13 +1506,14 @@ void block_move(int iter, int me)
 				"pushl %%edi\n\t"
 				"call error\n\t"
 				"popl %%edi\n\t"
-				"addl $8,%%esp\n\t"
+				"popl %%ecx\n\t"
+				"addl $4,%%esp\n\t"
 				"popl %%edx\n\t"
 				"jmp L122\n"
 				"L123:\n\t"
 				: "=D" (p)
 				: "D" (p), "d" (pe)
-				: "ecx"
+				: "ecx", "cc", "memory"
 			);
 		} while (!done);
 	}
@@ -1610,7 +1624,8 @@ void sleep(long n, int flag, int me)
 			"sbbl %3,%1"
 			:"=a" (l), "=d" (h)
 			:"g" (sl), "g" (sh),
-			"0" (l), "1" (h));
+			"0" (l), "1" (h)
+			:"cc");
 		t = h * ((unsigned)0xffffffff / v->clks_msec) / 1000;
 		t += (l / v->clks_msec) / 1000;
 
