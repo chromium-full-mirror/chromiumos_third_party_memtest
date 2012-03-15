@@ -746,7 +746,10 @@ void ttyprint(int y, int x, const char *p)
 {
 	static char sx[3];
 	static char sy[3];
-	
+	static spinlock_t lock = { .slock = 1 };
+
+	spin_lock(&lock);
+
 	sx[0]='\0';
 	sy[0]='\0';
 	x++; y++;
@@ -758,6 +761,8 @@ void ttyprint(int y, int x, const char *p)
 	serial_echo_print(sx);
 	serial_echo_print("H");
 	serial_echo_print(p);
+
+	spin_unlock(&lock);
 }
 
 void serial_echo_init(void)
