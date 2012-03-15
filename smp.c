@@ -476,11 +476,6 @@ void smp_init_bsp()
 
    memset(&AP, 0, sizeof AP);
 
-   /* XXX Hack to force the number of CPUs to 1. */
-   num_cpus = 1;
-   found_cpus = 1;
-   return;
-
    /* Search for the Floating MP structure pointer */
    fp = scan_for_floating_ptr_struct(0x0, 0x400);
    if (fp == NULL) {
